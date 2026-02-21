@@ -7,11 +7,15 @@
 #include "jnif.hpp"
 
 #include <stdio.h>
-#include <execinfo.h>
+#ifdef __GLIBC__
+    #include <execinfo.h>
+    #define EXECINFO_PRESENT 1
+#endif
 #include <unistd.h>
 
 namespace jnif {
 
+#if EXECINFO_PRESENT
     static void _backtrace(ostream& os) {
         void* array[20];
         size_t size;
@@ -26,6 +30,11 @@ namespace jnif {
 
         free(symbols);
     }
+#else
+    static void _backtrace(ostream& os) {
+        os << "    <backtrace not available>" << std::endl;
+    }
+#endif
 
 
     Exception::Exception() {
