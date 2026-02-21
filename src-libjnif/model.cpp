@@ -266,6 +266,12 @@ namespace jnif {
                   version(version), sig(&attrs) {
         }
 
+        std::unique_ptr<ClassFile> ClassFile::parse(u1 *classFileBytes, u4 size) {
+            auto cf  = std::unique_ptr<ClassFile>(new ClassFile());
+            parser::ClassFileParser::parse(classFileBytes, size, cf.get());
+            return cf;
+        }
+
         const char* ClassFile::getThisClassName() const {
             return getClassName(thisClassIndex);
         }
@@ -296,7 +302,7 @@ namespace jnif {
 
         std::unique_ptr<ClassFile> ClassFile::clone() {
             auto bytes = this->toBytes();
-            auto cf = std::unique_ptr<ClassFile>(new jnif::ClassFile());
+            auto cf = std::unique_ptr<ClassFile>(new ClassFile());
             parser::ClassFileParser::parse(bytes.data(), bytes.size(), cf.get());
             return cf;
         }

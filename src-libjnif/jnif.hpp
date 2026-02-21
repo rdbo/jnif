@@ -2834,8 +2834,13 @@ namespace jnif {
              * @param accessFlags
              * @param version
              */
-            explicit ClassFile(const char* className, const char* superClassName = OBJECT, u2 accessFlags = PUBLIC,
-                               Version version = Version());
+            explicit ClassFile(const char* className, const char* superClassName = OBJECT,
+                               u2 accessFlags = PUBLIC, Version version = Version());
+
+            /**
+             * Helper function for parsing a ClassFile from memory
+             */
+            static std::unique_ptr<ClassFile> parse(u1 *classFileBytes, u4 size);
 
             /**
              * Gets the class name of this class file.
