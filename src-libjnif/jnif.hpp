@@ -2329,6 +2329,10 @@ namespace jnif {
                 return attr;
             }
 
+            void remove(size_t index) {
+                attrs.erase(attrs.begin() + index);
+            }
+
             u2 size() const {
                 return attrs.size();
             }
