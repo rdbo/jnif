@@ -697,4 +697,9 @@ namespace jnif {
         ClassWriter<BufferWriter>(bw).writeClassFile(*this);
     }
 
+    std::vector<u1> ClassFile::toBytes() {
+        std::vector<u1> bytes(this->computeSize());
+        this->write(bytes.data(), bytes.size());
+        return bytes;
+    }
 }

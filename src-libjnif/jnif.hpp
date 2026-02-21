@@ -7,6 +7,7 @@
 #include <list>
 #include <map>
 #include <set>
+#include <memory>
 
 /**
  * The jnif namespace contains all type definitions, constants, enumerations
@@ -2945,6 +2946,16 @@ namespace jnif {
              * @see www.graphviz.org
              */
             void dot(ostream& os) const;
+
+            /**
+             * Clones this classfile
+             */
+            std::unique_ptr<ClassFile> clone();
+
+            /**
+             * Dumps the bytes of this classfile
+             */
+            std::vector<u1> toBytes();
 
             // Must be the first member, as it is needed for the destructors of the other members.
             Arena _arena;

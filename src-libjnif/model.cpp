@@ -294,6 +294,13 @@ namespace jnif {
             return methods.end();
         }
 
+        std::unique_ptr<ClassFile> ClassFile::clone() {
+            auto bytes = this->toBytes();
+            std::unique_ptr<ClassFile> cf;
+            parser::ClassFileParser::parse(bytes.data(), bytes.size(), cf.get());
+            return std::move(cf);
+        }
+
         static std::ostream &dotFrame(std::ostream &os, const Frame &frame) {
             os << " LVA: ";
             for (u4 i = 0; i < frame.lva.size(); i++) {
