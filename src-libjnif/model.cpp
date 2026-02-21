@@ -296,9 +296,9 @@ namespace jnif {
 
         std::unique_ptr<ClassFile> ClassFile::clone() {
             auto bytes = this->toBytes();
-            std::unique_ptr<ClassFile> cf;
+            auto cf = std::unique_ptr<ClassFile>(new jnif::ClassFile());
             parser::ClassFileParser::parse(bytes.data(), bytes.size(), cf.get());
-            return std::move(cf);
+            return cf;
         }
 
         static std::ostream &dotFrame(std::ostream &os, const Frame &frame) {
