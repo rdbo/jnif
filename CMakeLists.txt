@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 
 project(jnif)
 
+option(JNIF_ZIP_SUPPORT "Enable support for zip functionality" OFF)
 option(JNIF_BUILD_JNIFP "Build jnifp" OFF)
 option(JNIF_BUILD_TESTS "Enable building of tests" OFF)
 
@@ -15,7 +16,7 @@ find_package(JNI)
 find_package(Java QUIET)
 include(UseJava)
 
-add_library(jnif
+set(JNIF_SRC
         src-libjnif/parser.cpp
         src-libjnif/base.cpp
         src-libjnif/jnif.hpp
@@ -24,14 +25,21 @@ add_library(jnif
         src-libjnif/stream.cpp
         src-libjnif/jar.cpp
         src-libjnif/model.cpp
-        src-libjnif/analysis.cpp
-        src-libjnif/zip/ioapi.c
-        src-libjnif/zip/ioapi.h
-        src-libjnif/zip/unzip.c
-        src-libjnif/zip/unzip.h)
+        src-libjnif/analysis.cpp)
 
+if(JNIF_ZIP_SUPPORT)
+        set(JNIF_SRC ${JNIF_SRC}
+                src-libjnif/zip/ioapi.c
+                src-libjnif/zip/ioapi.h
+                src-libjnif/zip/unzip.c
+                src-libjnif/zip/unzip.h)
+endif()
+
+add_library(jnif ${JNIF_SRC})
 target_include_directories(jnif INTERFACE src-libjnif)
-target_link_libraries(jnif z)
+if(JNIF_ZIP_SUPPORT)
+        target_link_libraries(jnif z)
+endif()
 
 if(JNIF_BUILD_JNIFP)
         add_executable(jnifp
