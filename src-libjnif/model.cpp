@@ -597,6 +597,10 @@ namespace jnif {
                     return this->addZero(inst->opcode);
                 }
             }
+            case KIND_LABEL: {
+                // auto lblinst = (LabelInst *)inst;
+                return this->addLabel();
+            }
             case KIND_BIPUSH: {
                 auto bpinst = (PushInst *)inst;
                 return this->addBiPush(bpinst->value, pos);
