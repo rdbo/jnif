@@ -578,6 +578,31 @@ namespace jnif {
             return inst;
         }
 
+        void InstList::copy(Inst *inst, Inst *pos) {
+            switch (inst->kind) {
+            case KIND_ZERO: {
+                if (inst->opcode == Opcode::wide) {
+                    auto winst = (WideInst *)inst;
+                    if (winst->subOpcode == Opcode::iinc) {
+                        this->addWideIinc(winst->iinc.index, winst->iinc.value, pos);
+                    } else {
+                        this->addWideVar(winst->subOpcode, winst->var.lvindex, pos);
+                    }
+                } else {
+                    this->addZero(inst->opcode);
+                }
+                break;
+            }
+            case KIND_BIPUSH: {
+                auto bpinst = (PushInst *)inst;
+                this->addBiPush(bpinst->value, pos);
+                break;
+            }
+            default:
+                throw jnif::Exception("Invalid instruction copy");
+            }
+        }
+
         Inst* InstList::getInst(int offset) {
             for (Inst* inst : *this) {
                 if (inst->_offset == offset && !inst->isLabel()) {

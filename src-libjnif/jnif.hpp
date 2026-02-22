@@ -1892,6 +1892,8 @@ namespace jnif {
 
             LookupSwitchInst* addLookupSwitch(LabelInst* def, u4 npairs, Inst* pos = nullptr);
 
+            void copy(class Inst *inst, class Inst *pos = nullptr);
+
             bool hasBranches() const {
                 return branchesCount > 0;
             }
