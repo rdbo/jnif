@@ -1916,6 +1916,8 @@ namespace jnif {
 
             ClassFile* const constPool;
 
+            void addInst(Inst* inst, Inst* pos = nullptr);
+
         private:
 
             InstList(ClassFile* arena) :
@@ -1925,7 +1927,6 @@ namespace jnif {
 
             ~InstList();
 
-            void addInst(Inst* inst, Inst* pos);
 
             Inst* first;
             Inst* last;
