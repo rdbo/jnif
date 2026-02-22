@@ -654,7 +654,7 @@ namespace jnif {
                 return this->addMultiArray(mainst->classIndex, mainst->dims, pos);
             }
             default:
-                throw jnif::Exception("Copy not implemented for specified instruction");
+                throw jnif::Exception("Copy not implemented for specified instruction: ", inst->opcode, " (kind: ", inst->kind, ")");
             }
         }
 
