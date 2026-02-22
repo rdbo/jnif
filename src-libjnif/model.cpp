@@ -578,7 +578,7 @@ namespace jnif {
             return inst;
         }
 
-        void InstList::copy(Inst *inst, Inst *pos) {
+        Inst *InstList::copy(Inst *inst, Inst *pos) {
             // WARN: Some instructions use constant pool table indices,
             //       which MUST also be copied. Currently, this is NOT done.
             //       Also, some instructions reference other instructions.
@@ -589,84 +589,69 @@ namespace jnif {
                 if (inst->opcode == Opcode::wide) {
                     auto winst = (WideInst *)inst;
                     if (winst->subOpcode == Opcode::iinc) {
-                        this->addWideIinc(winst->iinc.index, winst->iinc.value, pos);
+                        return this->addWideIinc(winst->iinc.index, winst->iinc.value, pos);
                     } else {
-                        this->addWideVar(winst->subOpcode, winst->var.lvindex, pos);
+                        return this->addWideVar(winst->subOpcode, winst->var.lvindex, pos);
                     }
                 } else {
-                    this->addZero(inst->opcode);
+                    return this->addZero(inst->opcode);
                 }
-                break;
             }
             case KIND_BIPUSH: {
                 auto bpinst = (PushInst *)inst;
-                this->addBiPush(bpinst->value, pos);
-                break;
+                return this->addBiPush(bpinst->value, pos);
             }
             case KIND_SIPUSH: {
                 auto spinst = (PushInst *)inst;
-                this->addSiPush(spinst->value, pos);
-                break;
+                return this->addSiPush(spinst->value, pos);
             }
             case KIND_LDC: {
                 auto ldcinst = (LdcInst *)inst;
-                this->addLdc(ldcinst->opcode, ldcinst->valueIndex, pos);
-                break;
+                return this->addLdc(ldcinst->opcode, ldcinst->valueIndex, pos);
             }
             case KIND_VAR: {
                 auto vinst = (VarInst *)inst;
-                this->addVar(vinst->opcode, vinst->lvindex, pos);
-                break;
+                return this->addVar(vinst->opcode, vinst->lvindex, pos);
             }
             case KIND_IINC: {
                 auto iinst = (IincInst *)inst;
-                this->addIinc(iinst->index, iinst->value, pos);
-                break;
+                return this->addIinc(iinst->index, iinst->value, pos);
             }
             case KIND_JUMP: {
                 auto jinst = (JumpInst *)inst;
-                this->addJump(jinst->opcode, jinst->label(), pos);
-                break;
+                return this->addJump(jinst->opcode, jinst->label(), pos);
             }
             case KIND_TABLESWITCH: {
                 auto tsinst = (TableSwitchInst *)inst;
-                this->addTableSwitch((LabelInst *)tsinst->def, tsinst->low, tsinst->high, pos);
-                break;
+                return this->addTableSwitch((LabelInst *)tsinst->def, tsinst->low, tsinst->high, pos);
             }
             case KIND_FIELD: {
                 auto finst = (FieldInst *)inst;
-                this->addField(finst->opcode, finst->fieldRefIndex, pos);
-                break;
+                return this->addField(finst->opcode, finst->fieldRefIndex, pos);
             }
             case KIND_INVOKE: {
                 auto ivkinst = (InvokeInst *)inst;
-                this->addInvoke(ivkinst->opcode, ivkinst->methodRefIndex, pos);
-                break;
+                return this->addInvoke(ivkinst->opcode, ivkinst->methodRefIndex, pos);
             }
             case KIND_INVOKEINTERFACE: {
                 auto ivkiinst = (InvokeInterfaceInst *)inst;
-                this->addInvokeInterface(ivkiinst->interMethodRefIndex, ivkiinst->count, pos);
-                break;
+                return this->addInvokeInterface(ivkiinst->interMethodRefIndex, ivkiinst->count, pos);
             }
             case KIND_INVOKEDYNAMIC: {
                 auto ivkdinst = (InvokeDynamicInst *)inst;
-                this->addInvokeDynamic(ivkdinst->callSite(), pos);
-                break;
+                return this->addInvokeDynamic(ivkdinst->callSite(), pos);
             }
             case KIND_TYPE: {
                 auto tinst = (TypeInst *)inst;
-                this->addType(tinst->opcode, tinst->classIndex, pos);
-                break;
+                return this->addType(tinst->opcode, tinst->classIndex, pos);
             }
             case KIND_NEWARRAY: {
                 auto nainst = (NewArrayInst *)inst;
-                this->addNewArray(nainst->atype, pos);
-                break;
+                return this->addNewArray(nainst->atype, pos);
             }
             case KIND_MULTIARRAY: {
                 auto mainst = (MultiArrayInst *)inst;
-                this->addMultiArray(mainst->classIndex, mainst->dims, pos);
-                break;
+                return this->addMultiArray(mainst->classIndex, mainst->dims, pos);
             }
             default:
                 throw jnif::Exception("Copy not implemented for specified instruction");
