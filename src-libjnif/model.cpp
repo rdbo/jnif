@@ -579,6 +579,11 @@ namespace jnif {
         }
 
         void InstList::copy(Inst *inst, Inst *pos) {
+            // WARN: Some instructions use constant pool table indices,
+            //       which MUST also be copied. Currently, this is NOT done.
+            //       Also, some instructions reference other instructions.
+            // TODO: Fix the above.
+
             switch (inst->kind) {
             case KIND_ZERO: {
                 if (inst->opcode == Opcode::wide) {
@@ -598,8 +603,73 @@ namespace jnif {
                 this->addBiPush(bpinst->value, pos);
                 break;
             }
+            case KIND_SIPUSH: {
+                auto spinst = (PushInst *)inst;
+                this->addSiPush(spinst->value, pos);
+                break;
+            }
+            case KIND_LDC: {
+                auto ldcinst = (LdcInst *)inst;
+                this->addLdc(ldcinst->opcode, ldcinst->valueIndex, pos);
+                break;
+            }
+            case KIND_VAR: {
+                auto vinst = (VarInst *)inst;
+                this->addVar(vinst->opcode, vinst->lvindex, pos);
+                break;
+            }
+            case KIND_IINC: {
+                auto iinst = (IincInst *)inst;
+                this->addIinc(iinst->index, iinst->value, pos);
+                break;
+            }
+            case KIND_JUMP: {
+                auto jinst = (JumpInst *)inst;
+                this->addJump(jinst->opcode, jinst->label(), pos);
+                break;
+            }
+            case KIND_TABLESWITCH: {
+                auto tsinst = (TableSwitchInst *)inst;
+                this->addTableSwitch((LabelInst *)tsinst->def, tsinst->low, tsinst->high, pos);
+                break;
+            }
+            case KIND_FIELD: {
+                auto finst = (FieldInst *)inst;
+                this->addField(finst->opcode, finst->fieldRefIndex, pos);
+                break;
+            }
+            case KIND_INVOKE: {
+                auto ivkinst = (InvokeInst *)inst;
+                this->addInvoke(ivkinst->opcode, ivkinst->methodRefIndex, pos);
+                break;
+            }
+            case KIND_INVOKEINTERFACE: {
+                auto ivkiinst = (InvokeInterfaceInst *)inst;
+                this->addInvokeInterface(ivkiinst->interMethodRefIndex, ivkiinst->count, pos);
+                break;
+            }
+            case KIND_INVOKEDYNAMIC: {
+                auto ivkdinst = (InvokeDynamicInst *)inst;
+                this->addInvokeDynamic(ivkdinst->callSite(), pos);
+                break;
+            }
+            case KIND_TYPE: {
+                auto tinst = (TypeInst *)inst;
+                this->addType(tinst->opcode, tinst->classIndex, pos);
+                break;
+            }
+            case KIND_NEWARRAY: {
+                auto nainst = (NewArrayInst *)inst;
+                this->addNewArray(nainst->atype, pos);
+                break;
+            }
+            case KIND_MULTIARRAY: {
+                auto mainst = (MultiArrayInst *)inst;
+                this->addMultiArray(mainst->classIndex, mainst->dims, pos);
+                break;
+            }
             default:
-                throw jnif::Exception("Invalid instruction copy");
+                throw jnif::Exception("Copy not implemented for specified instruction");
             }
         }
 
