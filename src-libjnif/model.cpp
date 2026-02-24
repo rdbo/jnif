@@ -309,6 +309,16 @@ namespace jnif {
             return methods.end();
         }
 
+        list<Method>::iterator ClassFile::getMethod(const char* methodName, const char *methodDesc) {
+            for (auto it = methods.begin(); it != methods.end(); it++) {
+                if (it->getName() == string(methodName) && it->getDesc() == string(methodDesc)) {
+                    return it;
+                }
+            }
+
+            return methods.end();
+        }
+
         std::unique_ptr<ClassFile> ClassFile::clone() {
             auto bytes = this->toBytes();
             auto cf = std::unique_ptr<ClassFile>(new ClassFile());

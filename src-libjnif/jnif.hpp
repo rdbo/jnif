@@ -2943,6 +2943,8 @@ namespace jnif {
 
             list<Method>::iterator getMethod(const char* methodName);
 
+            list<Method>::iterator getMethod(const char* methodName, const char *methodDesc);
+
             /**
              * Computes the size in bytes of this class file of the in-memory
              * representation.
