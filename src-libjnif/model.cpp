@@ -105,6 +105,15 @@ namespace jnif {
             return i;
         }
 
+        void ConstPool::replaceUtf8(ConstPool::Index index, const char *str) {
+            std::string oldString = this->getUtf8(index);
+
+            const_cast<std::string &>(entries.at(index).utf8.str) = str;
+
+            utf8s.erase(std::string(oldString));
+            utf8s[std::string(str)] = index;
+        }
+
         ConstPool::Index ConstPool::addMethodHandle(u1 refKind, u2 refIndex) {
             return _addSingle(MethodHandle({refKind, refIndex}));
         }
@@ -305,6 +314,47 @@ namespace jnif {
             auto cf = std::unique_ptr<ClassFile>(new ClassFile());
             parser::ClassFileParser::parse(bytes.data(), bytes.size(), cf.get());
             return cf;
+        }
+
+        void ClassFile::rename(const char *newClassName) {
+            std::string oldClassName = this->getThisClassName();
+            std::string sourceFileName = std::string(newClassName);
+            size_t lastSlash = sourceFileName.find_last_of('/');
+            sourceFileName = sourceFileName.substr(lastSlash + 1) + ".java";
+            
+            // Patch SourceFile attribute
+            for (auto &attr : this->attrs.attrs) {
+                if (attr->kind == ATTR_SOURCEFILE) {
+                    auto sourceFileAttr = (SourceFileAttr *)attr;
+
+                    // Some SourceFile attributes have "SourceFile" in their
+                    // values, instead of an actual source file. We skip those.
+                    if (!strcmp(sourceFileAttr->sourceFile(), "SourceFile")) {
+                        continue;
+                    }
+
+                    this->replaceUtf8(sourceFileAttr->sourceFileIndex, sourceFileName.c_str());
+                }
+            }
+
+            // Patch class name in every string in this class
+            // TODO: This may be enough to patch the source file as well. Verify that.
+            for (size_t i = 0; i < entries.size(); ++i) {
+                auto &entry = entries[i];
+                if (entry.tag != Tag::UTF8)
+                    continue;
+
+                auto str = entry.utf8.str;
+
+
+                size_t index = 0;
+                while ((index = str.find(oldClassName, index)) != std::string::npos) {
+                    str.replace(index, oldClassName.length(), newClassName);
+                    index += oldClassName.length();
+                }
+
+                this->replaceUtf8(i, str.c_str());
+            }
         }
 
         static std::ostream &dotFrame(std::ostream &os, const Frame &frame) {

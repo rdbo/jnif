@@ -647,6 +647,15 @@ namespace jnif {
             Index addUtf8(const char* str);
 
             /**
+             * Replaces an already set UTF8 string from an index.
+             *
+             * @param index the index of the previously inserted UTF8 string
+             * @param str the null-terminated char array containing the modified
+             * UTF8 string.
+             */
+            void replaceUtf8(Index index, const char* str);
+
+            /**
              * @returns the Index of the newly created entry.
              */
             Index addMethodHandle(u1 refKind, u2 refIndex);
@@ -2967,6 +2976,11 @@ namespace jnif {
              * Dumps the bytes of this classfile
              */
             std::vector<u1> toBytes();
+
+            /**
+             * Renames this class
+             */
+            void rename(const char *newClassName);
 
             // Must be the first member, as it is needed for the destructors of the other members.
             Arena _arena;
