@@ -1138,7 +1138,9 @@ namespace jnif {
                                     LocalVariableTypeTableAttrParser,
                                     StackMapTableAttrParser>,
                             ExceptionsAttrParser,
-                            SignatureAttrParser>,
+                            SignatureAttrParser,
+                            InnerClassesAttrParser>, // TODO: Verify that InnerClassesAttrParser can
+                                                     // actually be here.
                     AttrsParser<
                             SignatureAttrParser>
             > parser;
