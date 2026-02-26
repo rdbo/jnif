@@ -1000,7 +1000,7 @@ namespace jnif {
  */
         struct InnerClassesAttrParser {
 
-            static constexpr const char *AttrName = "Exceptions";
+            static constexpr const char *AttrName = "InnerClasses";
 
             Attr *parse(BufferReader *br, ClassFile *cp, ConstPool::Index nameIndex) {
                 u2 len = br->readu2();
