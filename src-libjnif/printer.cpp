@@ -641,6 +641,9 @@ namespace jnif {
                         case ATTR_SMT:
                             printSmt((SmtAttr&) attr);
                             break;
+                        case ATTR_INNERCLASSES:
+                            printInnerClasses((InnerClassesAttr&) attr);
+                            break;
                     }
                 }
             }
@@ -784,6 +787,20 @@ namespace jnif {
                         parseTs(e.full_frame.locals);
                         parseTs(e.full_frame.stack);
                     }
+                }
+            }
+
+            void printInnerClasses(InnerClassesAttr& attr) {
+                line() << "Inner classes:";
+                for (u4 i = 0; i < attr.classes.size(); i++) {
+                    auto &inner = attr.classes[i];
+
+                    auto innerName = attr.constPool->getUtf8(inner.innerClassNameIndex);
+                    line() << "  Class '" << innerName << "'";
+                    line() << "    innerClassInfoIndex:   " << inner.innerClassInfoIndex;
+                    line() << "    outerClassInfoIndex:   " << inner.outerClassInfoIndex;
+                    line() << "    innerClassNameIndex:   " << inner.innerClassNameIndex;
+                    line() << "    innerClassAccessFlags: " << inner.innerClassAccessFlags;
                 }
             }
 

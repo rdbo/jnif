@@ -428,6 +428,19 @@ namespace jnif {
             }
         }
 
+        void writeInnerClasses(const InnerClassesAttr& attr) {
+            u2 size = attr.classes.size();
+
+            bw.writeu2(size);
+            for (u2 i = 0; i < size; i++) {
+                auto &inner = attr.classes[i];
+                bw.writeu2(inner.innerClassInfoIndex);
+                bw.writeu2(inner.outerClassInfoIndex);
+                bw.writeu2(inner.innerClassNameIndex);
+                bw.writeu2(inner.innerClassAccessFlags);
+            }
+        }
+
         int pos(int offset) {
             return bw.getOffset() - offset;
         }
@@ -665,6 +678,9 @@ namespace jnif {
                         break;
                     case ATTR_SMT:
                         writeSmt((SmtAttr&) attr);
+                        break;
+                    case ATTR_INNERCLASSES:
+                        writeInnerClasses((InnerClassesAttr&) attr);
                         break;
                     case ATTR_UNKNOWN:
                         writeUnknown((UnknownAttr&) attr);

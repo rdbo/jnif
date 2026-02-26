@@ -2285,7 +2285,8 @@ namespace jnif {
             ATTR_LVT,
             ATTR_LVTT,
             ATTR_LNT,
-            ATTR_SMT
+            ATTR_SMT,
+            ATTR_INNERCLASSES,
         };
 
         /// Defines the base class for all attributes in the class file.
@@ -2590,6 +2591,28 @@ namespace jnif {
 
             const Attrs* attrs;
 
+        };
+/**
+ * Represents the InnerClasses attribute.
+ */
+        class InnerClassesAttr : public Attr {
+        public:
+            struct InnerClass {
+                u2 innerClassInfoIndex;
+                u2 outerClassInfoIndex;
+                u2 innerClassNameIndex;
+                u2 innerClassAccessFlags;
+            };
+
+            InnerClassesAttr(u2 nameIndex, ClassFile* constPool,
+                             const vector<InnerClass>& classes) :
+                    classes(classes),
+                    Attr(ATTR_INNERCLASSES, nameIndex,
+                         classes.size() * 8 + 2,
+                         constPool) {
+            }
+
+            vector<InnerClass> classes;
         };
 
 /// Represent a member of a class. This the base class for Field and
