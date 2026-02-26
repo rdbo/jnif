@@ -996,6 +996,38 @@ namespace jnif {
         };
 
 /**
+ * The InnerClassesAttrParser parses the Exceptions attribute of a method.
+ */
+        struct InnerClassesAttrParser {
+
+            static constexpr const char *AttrName = "Exceptions";
+
+            Attr *parse(BufferReader *br, ClassFile *cp, ConstPool::Index nameIndex) {
+                u2 len = br->readu2();
+
+                vector<InnerClassesAttr::InnerClass> classes;
+                for (int i = 0; i < len; i++) {
+                    auto innerInfoIndex = br->readu2();
+                    auto outerInfoIndex = br->readu2();
+                    auto innerNameIndex = br->readu2();
+                    auto innerAccessFlags = br->readu2();
+
+                    classes.push_back({
+                        innerInfoIndex,
+                        outerInfoIndex,
+                        innerNameIndex,
+                        innerAccessFlags
+                    });
+                }
+
+                Attr *attr = cp->_arena.create<InnerClassesAttr>(nameIndex, cp, classes);
+
+                return attr;
+            }
+
+        };
+
+/**
  * Represents an abstract java class file parser.
  *
  * Only suitable when TClassAttrsParser, TMethodAttrsParser and
