@@ -1127,10 +1127,14 @@ namespace jnif {
         void ClassFileParser::parse(const u1 *data, u4 len, ClassFile *classFile) {
             BufferReader br(data, len);
             ClassParser<
+                    // Const pool parsers
                     ConstPoolParser,
+                    // Class attrs parsers
                     AttrsParser<
                             SourceFileAttrParser,
-                            SignatureAttrParser>,
+                            SignatureAttrParser,
+                            InnerClassesAttrParser>,
+                    // Method attrs parser
                     AttrsParser<
                             CodeAttrParser<
                                     LineNumberTableAttrParser,
@@ -1138,9 +1142,9 @@ namespace jnif {
                                     LocalVariableTypeTableAttrParser,
                                     StackMapTableAttrParser>,
                             ExceptionsAttrParser,
-                            SignatureAttrParser,
-                            InnerClassesAttrParser>, // TODO: Verify that InnerClassesAttrParser can
-                                                     // actually be here.
+                            SignatureAttrParser
+                            >,
+                    // Field attrs parsers
                     AttrsParser<
                             SignatureAttrParser>
             > parser;
