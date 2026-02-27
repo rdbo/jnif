@@ -3,6 +3,7 @@
 //
 
 #include "jnif.hpp"
+#include <cstdio>
 
 namespace jnif {
 
@@ -365,6 +366,19 @@ namespace jnif {
 
                 this->replaceUtf8(i, str.c_str());
             }
+        }
+
+        bool ClassFile::dump(const char *filepath) {
+            FILE *file = fopen(filepath, "wb");
+            if (!file)
+                return false;
+
+            auto bytes = this->toBytes();
+            auto result = fwrite(bytes.data(), 1, bytes.size(), file) == bytes.size();
+
+            fclose(file);
+
+            return result;
         }
 
         static std::ostream &dotFrame(std::ostream &os, const Frame &frame) {

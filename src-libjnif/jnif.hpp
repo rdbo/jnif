@@ -3007,6 +3007,11 @@ namespace jnif {
              */
             void rename(const char *newClassName);
 
+            /**
+             * Dumps the classfile bytes to a file
+             */
+            bool dump(const char *filepath);
+
             // Must be the first member, as it is needed for the destructors of the other members.
             Arena _arena;
 
