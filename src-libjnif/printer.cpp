@@ -795,7 +795,7 @@ namespace jnif {
                 for (u4 i = 0; i < attr.classes.size(); i++) {
                     auto &inner = attr.classes[i];
 
-                    auto innerName = attr.constPool->getUtf8(inner.innerClassNameIndex);
+                    auto innerName = inner.innerClassNameIndex != 0 ? attr.constPool->getUtf8(inner.innerClassNameIndex) : "<anonymous>";
                     line() << "  Class '" << innerName << "'";
                     line() << "    innerClassInfoIndex:   " << inner.innerClassInfoIndex;
                     line() << "    outerClassInfoIndex:   " << inner.outerClassInfoIndex;
