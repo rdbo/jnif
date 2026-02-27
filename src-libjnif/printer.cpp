@@ -791,16 +791,16 @@ namespace jnif {
             }
 
             void printInnerClasses(InnerClassesAttr& attr) {
-                line() << "Inner classes:";
+                line() << "Inner classes:" << endl;
                 for (u4 i = 0; i < attr.classes.size(); i++) {
                     auto &inner = attr.classes[i];
 
                     auto innerName = inner.innerClassNameIndex != 0 ? attr.constPool->getUtf8(inner.innerClassNameIndex) : "<anonymous>";
-                    line() << "  Class '" << innerName << "'";
-                    line() << "    innerClassInfoIndex:   " << inner.innerClassInfoIndex;
-                    line() << "    outerClassInfoIndex:   " << inner.outerClassInfoIndex;
-                    line() << "    innerClassNameIndex:   " << inner.innerClassNameIndex;
-                    line() << "    innerClassAccessFlags: " << inner.innerClassAccessFlags;
+                    line() << "  Class '" << innerName << "'" << endl;
+                    line() << "    innerClassInfoIndex:   " << inner.innerClassInfoIndex << endl;
+                    line() << "    outerClassInfoIndex:   " << inner.outerClassInfoIndex << endl;
+                    line() << "    innerClassNameIndex:   " << inner.innerClassNameIndex << endl;
+                    line() << "    innerClassAccessFlags: " << inner.innerClassAccessFlags << endl;
                 }
             }
 
