@@ -356,35 +356,24 @@ namespace jnif {
 
                 auto str = entry.utf8.str;
 
-
-                // Patch self references
                 size_t index = 0;
-                std::string oldRefStr = "L" + oldClassName + ";";
-                std::string newRefStr = "L" + std::string(newClassName) + ";";
-                while ((index = str.find(oldRefStr, index)) != std::string::npos) {
-                    str.replace(index, oldRefStr.length(), newRefStr);
-                    index += oldRefStr.length();
-                }
+                std::string oldNameStr = oldClassName;
+                std::string newNameStr = std::string(newClassName);
+                for (index = str.find(oldNameStr, index); index != std::string::npos; index += oldNameStr.length()) {
+                    if (str.length() > index + 1) {
+                        // Small lookahead to verify that this is the actual
+                        // class, and not some other class.
+                        // E.g: replacing MyClass without checks would also
+                        // replace MyClass2, which is not intended
+                        char c = str[index + 1];
+                        if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
+                            (c >= '0' && c <= '9') || c == '_')
+                        {
+                            continue;
+                        }
+                    }
 
-                // Patch inner class references
-                index = 0;
-                std::string oldInnerRefStr = oldClassName + "$";
-                std::string newInnerRefStr = std::string(newClassName) + "$";
-                while ((index = str.find(oldInnerRefStr, index)) != std::string::npos) {
-                    str.replace(index, oldInnerRefStr.length(), newInnerRefStr);
-                    index += oldInnerRefStr.length();
-                }
-
-                // Patch class access
-                // Will patch SourceFile attribute if needed,
-                // and also some instructions that reference
-                // the class name
-                index = 0;
-                std::string oldClassAccessStr = oldClassName + ".";
-                std::string newClassAccessStr = std::string(newClassName) + ".";
-                while ((index = str.find(oldClassAccessStr, index)) != std::string::npos) {
-                    str.replace(index, oldClassAccessStr.length(), newClassAccessStr);
-                    index += oldClassAccessStr.length();
+                    str.replace(index, oldNameStr.length(), newNameStr);
                 }
 
                 this->replaceUtf8(i, str.c_str());
