@@ -829,7 +829,11 @@ namespace jnif {
             void printMethodParameters(MethodParametersAttr& attr) {
                 line() << "Method Parameters: " << endl;
                 for (auto &param : attr.methodParameters) {
-                    line() << "  #" << param.nameIndex << ": " << attr.constPool->getUtf8(param.nameIndex) << "(access flags: " << param.accessFlags << ")" << endl;
+                    std::string name = "<unnamed>";
+                    if (param.nameIndex != 0) {
+                        name = attr.constPool->getUtf8(param.nameIndex);
+                    }
+                    line() << "  #" << param.nameIndex << ": " << name << "(access flags: " << param.accessFlags << ")" << endl;
                 }
             }
 
