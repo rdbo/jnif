@@ -349,7 +349,6 @@ namespace jnif {
             }
 
             // Patch class name in every string in this class
-            // TODO: This may be enough to patch the source file as well. Verify that.
             for (size_t i = 0; i < entries.size(); ++i) {
                 auto &entry = entries[i];
                 if (entry.tag != Tag::UTF8)
@@ -374,6 +373,18 @@ namespace jnif {
                 while ((index = str.find(oldInnerRefStr, index)) != std::string::npos) {
                     str.replace(index, oldInnerRefStr.length(), newInnerRefStr);
                     index += oldInnerRefStr.length();
+                }
+
+                // Patch class access
+                // Will patch SourceFile attribute if needed,
+                // and also some instructions that reference
+                // the class name
+                index = 0;
+                std::string oldClassAccessStr = oldClassName + ".";
+                std::string newClassAccessStr = std::string(newClassName) + ".";
+                while ((index = str.find(oldClassAccessStr, index)) != std::string::npos) {
+                    str.replace(index, oldClassAccessStr.length(), newClassAccessStr);
+                    index += oldClassAccessStr.length();
                 }
 
                 this->replaceUtf8(i, str.c_str());
