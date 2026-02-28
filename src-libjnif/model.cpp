@@ -356,15 +356,14 @@ namespace jnif {
 
                 auto str = entry.utf8.str;
 
-                size_t index = 0;
                 std::string oldNameStr = oldClassName;
                 std::string newNameStr = std::string(newClassName);
-                for (index = str.find(oldNameStr, index); index != std::string::npos; index += oldNameStr.length()) {
+                for (size_t index = 0; (index = str.find(oldNameStr, index)) != std::string::npos; index += oldNameStr.length()) {
                     if (str.length() > index + 1) {
                         // Small lookahead to verify that this is the actual
                         // class, and not some other class.
-                        // E.g: replacing MyClass without checks would also
-                        // replace MyClass2, which is not intended
+                        // E.g: replacing dummy/MyClass without checks would also
+                        // replace dummy/MyClass2, which is not intended
                         char c = str[index + 1];
                         if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
                             (c >= '0' && c <= '9') || c == '_')
