@@ -358,10 +358,13 @@ namespace jnif {
                 auto str = entry.utf8.str;
 
 
+                // Patch self references
                 size_t index = 0;
-                while ((index = str.find(oldClassName, index)) != std::string::npos) {
-                    str.replace(index, oldClassName.length(), newClassName);
-                    index += oldClassName.length();
+                std::string oldRefStr = "L" + oldClassName + ";";
+                std::string newRefStr = "L" + std::string(newClassName) + ";";
+                while ((index = str.find(oldRefStr, index)) != std::string::npos) {
+                    str.replace(index, oldRefStr.length(), newRefStr);
+                    index += oldRefStr.length();
                 }
 
                 this->replaceUtf8(i, str.c_str());
