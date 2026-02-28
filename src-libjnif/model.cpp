@@ -364,7 +364,7 @@ namespace jnif {
                         // class, and not some other class.
                         // E.g: replacing dummy/MyClass without checks would also
                         // replace dummy/MyClass2, which is not intended
-                        char c = str[index + oldNameStr.length() + 1];
+                        char c = str[index + oldNameStr.length()];
                         if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
                             (c >= '0' && c <= '9') || c == '_')
                         {
