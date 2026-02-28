@@ -1068,6 +1068,31 @@ namespace jnif {
         };
 
 /**
+ * The MethodParametersAttrParser parses the MethodParameters attribute of a class.
+ */
+        struct MethodParametersAttrParser {
+
+            static constexpr const char *AttrName = "MethodParameters";
+
+            Attr *parse(BufferReader *br, ClassFile *cp, ConstPool::Index nameIndex) {
+                u1 len = br->readu1();
+
+                vector<MethodParametersAttr::MethodParameter> params;
+                for (u1 i = 0; i < len; i++) {
+                    auto nameIndex = br->readu2();
+                    auto accessFlags = br->readu2();
+
+                    params.push_back({ nameIndex, accessFlags });
+                }
+
+                Attr *attr = cp->_arena.create<MethodParametersAttr>(nameIndex, cp, params);
+
+                return attr;
+            }
+
+        };
+
+/**
  * Represents an abstract java class file parser.
  *
  * Only suitable when TClassAttrsParser, TMethodAttrsParser and
@@ -1184,7 +1209,8 @@ namespace jnif {
                                     LocalVariableTypeTableAttrParser,
                                     StackMapTableAttrParser>,
                             ExceptionsAttrParser,
-                            SignatureAttrParser
+                            SignatureAttrParser,
+                            MethodParametersAttrParser
                             >,
                     // Field attrs parsers
                     AttrsParser<

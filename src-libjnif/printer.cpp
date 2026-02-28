@@ -650,6 +650,9 @@ namespace jnif {
                         case ATTR_NESTHOST:
                             printNestHost((NestHostAttr&) attr);
                             break;
+                        case ATTR_METHODPARAMETERS:
+                            printMethodParameters((MethodParametersAttr&) attr);
+                            break;
                     }
                 }
             }
@@ -821,6 +824,13 @@ namespace jnif {
 
             void printNestHost(NestHostAttr& attr) {
                 line() << "Nest host: " << "#" << attr.hostClassIndex << ": " << attr.constPool->getClassName(attr.hostClassIndex) << endl;
+            }
+
+            void printMethodParameters(MethodParametersAttr& attr) {
+                line() << "Method Parameters: " << endl;
+                for (auto &param : attr.methodParameters) {
+                    line() << "  #" << param.nameIndex << ": " << attr.constPool->getUtf8(param.nameIndex) << "(access flags: " << param.accessFlags << ")" << endl;
+                }
             }
 
         private:

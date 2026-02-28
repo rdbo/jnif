@@ -2289,6 +2289,7 @@ namespace jnif {
             ATTR_INNERCLASSES,
             ATTR_NESTMEMBERS,
             ATTR_NESTHOST,
+            ATTR_METHODPARAMETERS,
         };
 
         /// Defines the base class for all attributes in the class file.
@@ -2647,6 +2648,27 @@ namespace jnif {
             }
 
             u2 hostClassIndex;
+        };
+
+/**
+ * Represents the MethodParameters attribute.
+ */
+        class MethodParametersAttr : public Attr {
+        public:
+            struct MethodParameter {
+                u2 nameIndex;
+                u2 accessFlags;
+            };
+
+            MethodParametersAttr(u2 nameIndex, ClassFile* constPool,
+                                 vector<MethodParameter> methodParameters) :
+                    methodParameters(methodParameters),
+                    Attr(ATTR_METHODPARAMETERS, nameIndex,
+                         methodParameters.size() * sizeof(MethodParameter) + 1,
+                         constPool) {
+            }
+
+            vector<MethodParameter> methodParameters;
         };
 
 /// Represent a member of a class. This the base class for Field and

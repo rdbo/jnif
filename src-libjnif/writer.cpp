@@ -455,6 +455,17 @@ namespace jnif {
             bw.writeu2(attr.hostClassIndex);
         }
 
+        void writeMethodParameters(const MethodParametersAttr& attr) {
+            u1 size = attr.methodParameters.size();
+
+            bw.writeu1(size);
+            for (u1 i = 0; i < size; i++) {
+                auto &param = attr.methodParameters[i];
+                bw.writeu2(param.nameIndex);
+                bw.writeu2(param.accessFlags);
+            }
+        }
+
         int pos(int offset) {
             return bw.getOffset() - offset;
         }
@@ -701,6 +712,9 @@ namespace jnif {
                         break;
                     case ATTR_NESTHOST:
                         writeNestHost((NestHostAttr&) attr);
+                        break;
+                    case ATTR_METHODPARAMETERS:
+                        writeMethodParameters((MethodParametersAttr&) attr);
                         break;
                     case ATTR_UNKNOWN:
                         writeUnknown((UnknownAttr&) attr);
