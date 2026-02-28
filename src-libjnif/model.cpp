@@ -369,8 +369,8 @@ namespace jnif {
 
                 // Patch inner class references
                 index = 0;
-                std::string oldInnerRefStr = "L" + oldClassName + "$";
-                std::string newInnerRefStr = "L" + std::string(newClassName) + "$";
+                std::string oldInnerRefStr = oldClassName + "$";
+                std::string newInnerRefStr = std::string(newClassName) + "$";
                 while ((index = str.find(oldInnerRefStr, index)) != std::string::npos) {
                     str.replace(index, oldInnerRefStr.length(), newInnerRefStr);
                     index += oldInnerRefStr.length();
