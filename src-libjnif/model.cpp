@@ -367,6 +367,15 @@ namespace jnif {
                     index += oldRefStr.length();
                 }
 
+                // Patch inner class references
+                index = 0;
+                std::string oldInnerRefStr = "L" + oldClassName + "$";
+                std::string newInnerRefStr = "L" + std::string(newClassName) + "$";
+                while ((index = str.find(oldInnerRefStr, index)) != std::string::npos) {
+                    str.replace(index, oldInnerRefStr.length(), newInnerRefStr);
+                    index += oldInnerRefStr.length();
+                }
+
                 this->replaceUtf8(i, str.c_str());
             }
         }
