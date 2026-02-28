@@ -996,7 +996,7 @@ namespace jnif {
         };
 
 /**
- * The InnerClassesAttrParser parses the Exceptions attribute of a method.
+ * The InnerClassesAttrParser parses the InnerClasses attribute of a class.
  */
         struct InnerClassesAttrParser {
 
@@ -1021,6 +1021,30 @@ namespace jnif {
                 }
 
                 Attr *attr = cp->_arena.create<InnerClassesAttr>(nameIndex, cp, classes);
+
+                return attr;
+            }
+
+        };
+
+/**
+ * The NestMembersAttrParser parses the NestMembers attribute of a class.
+ */
+        struct NestMembersAttrParser {
+
+            static constexpr const char *AttrName = "NestMembers";
+
+            Attr *parse(BufferReader *br, ClassFile *cp, ConstPool::Index nameIndex) {
+                u2 len = br->readu2();
+
+                vector<u2> classes;
+                for (int i = 0; i < len; i++) {
+                    auto index = br->readu2();
+
+                    classes.push_back(index);
+                }
+
+                Attr *attr = cp->_arena.create<NestMembersAttr>(nameIndex, cp, classes);
 
                 return attr;
             }
@@ -1133,7 +1157,8 @@ namespace jnif {
                     AttrsParser<
                             SourceFileAttrParser,
                             SignatureAttrParser,
-                            InnerClassesAttrParser>,
+                            InnerClassesAttrParser,
+                            NestMembersAttrParser>,
                     // Method attrs parser
                     AttrsParser<
                             CodeAttrParser<

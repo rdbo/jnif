@@ -441,6 +441,16 @@ namespace jnif {
             }
         }
 
+        void writeNestMembers(const NestMembersAttr &attr) {
+            u2 size = attr.classes.size();
+
+            bw.writeu2(size);
+            for (u2 i = 0; i < size; i++) {
+                u2 e = attr.classes[i];
+                bw.writeu2(e);
+            }
+        }
+
         int pos(int offset) {
             return bw.getOffset() - offset;
         }
@@ -681,6 +691,9 @@ namespace jnif {
                         break;
                     case ATTR_INNERCLASSES:
                         writeInnerClasses((InnerClassesAttr&) attr);
+                        break;
+                    case ATTR_NESTMEMBERS:
+                        writeNestMembers((NestMembersAttr&) attr);
                         break;
                     case ATTR_UNKNOWN:
                         writeUnknown((UnknownAttr&) attr);

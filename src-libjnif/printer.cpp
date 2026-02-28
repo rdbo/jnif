@@ -644,6 +644,9 @@ namespace jnif {
                         case ATTR_INNERCLASSES:
                             printInnerClasses((InnerClassesAttr&) attr);
                             break;
+                        case ATTR_NESTMEMBERS:
+                            printNestMembers((NestMembersAttr&) attr);
+                            break;
                     }
                 }
             }
@@ -801,6 +804,15 @@ namespace jnif {
                     line() << "    outerClassInfoIndex:   " << inner.outerClassInfoIndex << endl;
                     line() << "    innerClassNameIndex:   " << inner.innerClassNameIndex << endl;
                     line() << "    innerClassAccessFlags: " << inner.innerClassAccessFlags << endl;
+                }
+            }
+
+            void printNestMembers(NestMembersAttr& attr) {
+                line() << "Nest members:" << endl;
+                for (u4 i = 0; i < attr.classes.size(); i++) {
+                    auto &index = attr.classes[i];
+                    auto clazzName = attr.constPool->getClassName(index);
+                    line() << "  #" << index << ": " << clazzName << endl;
                 }
             }
 
