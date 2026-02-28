@@ -2288,6 +2288,7 @@ namespace jnif {
             ATTR_SMT,
             ATTR_INNERCLASSES,
             ATTR_NESTMEMBERS,
+            ATTR_NESTHOST,
         };
 
         /// Defines the base class for all attributes in the class file.
@@ -2630,6 +2631,22 @@ namespace jnif {
             }
 
             vector<u2> classes;
+        };
+
+/**
+ * Represents the NestHost attribute.
+ */
+        class NestHostAttr : public Attr {
+        public:
+            NestHostAttr(u2 nameIndex, ClassFile* constPool,
+                             const u2 hostClassIndex) :
+                    hostClassIndex(hostClassIndex),
+                    Attr(ATTR_NESTHOST, nameIndex,
+                         sizeof(hostClassIndex),
+                         constPool) {
+            }
+
+            u2 hostClassIndex;
         };
 
 /// Represent a member of a class. This the base class for Field and

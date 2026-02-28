@@ -647,6 +647,9 @@ namespace jnif {
                         case ATTR_NESTMEMBERS:
                             printNestMembers((NestMembersAttr&) attr);
                             break;
+                        case ATTR_NESTHOST:
+                            printNestHost((NestHostAttr&) attr);
+                            break;
                     }
                 }
             }
@@ -814,6 +817,10 @@ namespace jnif {
                     auto clazzName = attr.constPool->getClassName(index);
                     line() << "  #" << index << ": " << clazzName << endl;
                 }
+            }
+
+            void printNestHost(NestHostAttr& attr) {
+                line() << "Nest host: " << "#" << attr.hostClassIndex << ": " << attr.constPool->getClassName(attr.hostClassIndex) << endl;
             }
 
         private:

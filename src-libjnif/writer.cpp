@@ -451,6 +451,10 @@ namespace jnif {
             }
         }
 
+        void writeNestHost(const NestHostAttr &attr) {
+            bw.writeu2(attr.hostClassIndex);
+        }
+
         int pos(int offset) {
             return bw.getOffset() - offset;
         }
@@ -694,6 +698,9 @@ namespace jnif {
                         break;
                     case ATTR_NESTMEMBERS:
                         writeNestMembers((NestMembersAttr&) attr);
+                        break;
+                    case ATTR_NESTHOST:
+                        writeNestHost((NestHostAttr&) attr);
                         break;
                     case ATTR_UNKNOWN:
                         writeUnknown((UnknownAttr&) attr);

@@ -1052,6 +1052,23 @@ namespace jnif {
         };
 
 /**
+ * The NestHostAttrParser parses the NestHost attribute of a class.
+ */
+        struct NestHostAttrParser {
+
+            static constexpr const char *AttrName = "NestHost";
+
+            Attr *parse(BufferReader *br, ClassFile *cp, ConstPool::Index nameIndex) {
+                u2 len = br->readu2();
+                u2 hostClassIndex = br->readu2();
+                Attr *attr = cp->_arena.create<NestHostAttr>(nameIndex, cp, hostClassIndex);
+
+                return attr;
+            }
+
+        };
+
+/**
  * Represents an abstract java class file parser.
  *
  * Only suitable when TClassAttrsParser, TMethodAttrsParser and
@@ -1158,7 +1175,8 @@ namespace jnif {
                             SourceFileAttrParser,
                             SignatureAttrParser,
                             InnerClassesAttrParser,
-                            NestMembersAttrParser>,
+                            NestMembersAttrParser,
+                            NestHostAttrParser>,
                     // Method attrs parser
                     AttrsParser<
                             CodeAttrParser<
