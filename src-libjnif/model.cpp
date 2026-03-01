@@ -360,7 +360,7 @@ namespace jnif {
 
                 std::string oldNameStr = oldClassName;
                 std::string newNameStr = std::string(newClassName);
-                for (size_t index = 0; (index = str.find(oldNameStr, index)) != std::string::npos; index += oldNameStr.length()) {
+                for (size_t index = 0; (index = str.find(oldNameStr, index)) != std::string::npos;) {
                     if (str.length() > index + oldNameStr.length() + 1) {
                         // Small lookahead to verify that this is the actual
                         // class, and not some other class.
@@ -370,11 +370,13 @@ namespace jnif {
                         if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
                             (c >= '0' && c <= '9') || c == '_')
                         {
+                            index += oldNameStr.length();
                             continue;
                         }
                     }
 
                     str.replace(index, oldNameStr.length(), newNameStr);
+                    index += newNameStr.length();
                 }
 
                 this->replaceUtf8(i, str.c_str());
