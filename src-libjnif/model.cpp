@@ -331,6 +331,7 @@ namespace jnif {
             if (!strlen(oldClassName))
                 return;
 
+            std::string oldNameStr = oldClassName; // Make copy of the oldClassName, as it might get mutated
             std::string sourceFileName = std::string(newClassName);
             size_t lastSlash = sourceFileName.find_last_of('/');
             sourceFileName = sourceFileName.substr(lastSlash + 1) + ".java";
@@ -358,7 +359,6 @@ namespace jnif {
 
                 auto str = entry.utf8.str;
 
-                std::string oldNameStr = oldClassName;
                 std::string newNameStr = std::string(newClassName);
                 for (size_t index = 0; (index = str.find(oldNameStr, index)) != std::string::npos;) {
                     if (str.length() > index + oldNameStr.length() + 1) {
