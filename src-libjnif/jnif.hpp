@@ -2290,6 +2290,9 @@ namespace jnif {
             ATTR_NESTMEMBERS,
             ATTR_NESTHOST,
             ATTR_METHODPARAMETERS,
+            ATTR_BOOTSTRAPMETHODS,
+            ATTR_CONSTANTVALUE,
+            ATTR_RUNTIME_VISIBLE_ANNOTATIONS,
         };
 
         /// Defines the base class for all attributes in the class file.
@@ -2670,6 +2673,85 @@ namespace jnif {
 
             vector<MethodParameter> methodParameters;
         };
+
+/**
+ * Represents the BootstrapMethods attribute.
+ */
+        class BootstrapMethodsAttr : public Attr {
+        public:
+            struct BootstrapMethod {
+                u2 bootstrap_method_ref;
+                vector<u2> bootstrap_arguments;
+            };
+
+            BootstrapMethodsAttr(u2 nameIndex, ClassFile* constPool,
+                                 vector<BootstrapMethod> bootstrapMethods) :
+                    bootstrapMethods(bootstrapMethods),
+                    Attr(ATTR_BOOTSTRAPMETHODS, nameIndex,
+                         calculateSize(bootstrapMethods),
+                         constPool) {
+            }
+
+            static u4 calculateSize(const vector<BootstrapMethod> &bootstrapMethods) {
+                u4 size = 2; // num_bootstrap_methods (u2)
+                for (auto &method : bootstrapMethods) {
+                    size += 4; // boostrap_method_ref (u2), num_bootstrap_arguments (u2)
+                    size += method.bootstrap_arguments.size() * 2;
+                }
+
+                return size;
+            }
+
+            vector<BootstrapMethod> bootstrapMethods;
+        };
+
+/**
+ * Represents the ConstantValue attribute.
+ */
+        class ConstantValueAttr : public Attr {
+        public:
+            ConstantValueAttr(u2 nameIndex, ClassFile* constPool,
+                             const u2 constantValueIndex) :
+                    constantValueIndex(constantValueIndex),
+                    Attr(ATTR_CONSTANTVALUE, nameIndex,
+                         sizeof(constantValueIndex),
+                         constPool) {
+            }
+
+            u2 constantValueIndex;
+        };
+
+// /**
+//  * Represents a generic annotations attribute
+//  */
+//     class GenericAnnotationsAttr : public Attr {
+//     public:
+//         struct ElementValue {
+//             u1 tag;
+//             union {
+                
+//             };         
+//         };
+
+//         struct Annotation {
+//             u2 type_index;
+//             vector<u2> element_value_pairs;
+//         };
+//     };
+
+// /**
+//  * Represents the RuntimeVisibleAnnotations attribute.
+//  */
+//         class RuntimeVisibleAnnotationsAttr : public Attr {
+//         public:
+
+//             RuntimeVisibleAnnotationsAttr(u2 nameIndex, ClassFile* constPool,
+//                                           const vector<Annotation>& runtimeVisibleAnnotations) :
+//                     Attr(ATTR_RUNTIME_VISIBLE_ANNOTATIONS, nameIndex, runtimeVisibleAnnotations.size() * 2 + 2, constPool), runtimeVisibleAnnotations(runtimeVisibleAnnotations) {
+//             }
+
+//             vector<Annotation> runtimeVisibleAnnotations;
+//         };
 
 /// Represent a member of a class. This the base class for Field and
 /// Method classes.

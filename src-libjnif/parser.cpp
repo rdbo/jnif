@@ -1093,6 +1093,54 @@ namespace jnif {
         };
 
 /**
+ * The BootstrapMethodsAttrParser parses the BootstrapMethods attribute of a class.
+ */
+        struct BootstrapMethodsAttrParser {
+
+            static constexpr const char *AttrName = "BootstrapMethods";
+
+            Attr *parse(BufferReader *br, ClassFile *cp, ConstPool::Index nameIndex) {
+                u2 len = br->readu2();
+
+                vector<BootstrapMethodsAttr::BootstrapMethod> methods;
+                for (u2 i = 0; i < len; i++) {
+                    auto methodRef = br->readu2();
+                    auto numArgs = br->readu2();
+
+                    std::vector<u2> args;
+                    for (u2 j = 0; j < numArgs; ++j) {
+                        u2 arg = br->readu2();
+                        args.push_back(arg);
+                    }
+
+                    methods.push_back({ methodRef, args });
+                }
+
+                Attr *attr = cp->_arena.create<BootstrapMethodsAttr>(nameIndex, cp, methods);
+
+                return attr;
+            }
+
+        };
+
+
+/**
+ * The ConstantValueAttrParser parses the ConstantValue attribute of a class.
+ */
+        struct ConstantValueAttrParser {
+
+            static constexpr const char *AttrName = "ConstantValue";
+
+            Attr *parse(BufferReader *br, ClassFile *cp, ConstPool::Index nameIndex) {
+                u2 constantValueIndex = br->readu2();
+                Attr *attr = cp->_arena.create<ConstantValueAttr>(nameIndex, cp, constantValueIndex);
+
+                return attr;
+            }
+
+        };
+
+/**
  * Represents an abstract java class file parser.
  *
  * Only suitable when TClassAttrsParser, TMethodAttrsParser and
@@ -1200,7 +1248,8 @@ namespace jnif {
                             SignatureAttrParser,
                             InnerClassesAttrParser,
                             NestMembersAttrParser,
-                            NestHostAttrParser>,
+                            NestHostAttrParser,
+                            BootstrapMethodsAttrParser>,
                     // Method attrs parser
                     AttrsParser<
                             CodeAttrParser<
@@ -1214,7 +1263,8 @@ namespace jnif {
                             >,
                     // Field attrs parsers
                     AttrsParser<
-                            SignatureAttrParser>
+                            SignatureAttrParser,
+                            ConstantValueAttrParser>
             > parser;
             parser.parse(&br, classFile);
         }

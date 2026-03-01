@@ -653,6 +653,12 @@ namespace jnif {
                         case ATTR_METHODPARAMETERS:
                             printMethodParameters((MethodParametersAttr&) attr);
                             break;
+                        case ATTR_BOOTSTRAPMETHODS:
+                            printBootstrapMethods((BootstrapMethodsAttr&) attr);
+                            break;
+                        case ATTR_CONSTANTVALUE:
+                            printConstantValue((ConstantValueAttr&) attr);
+                            break;
                     }
                 }
             }
@@ -835,6 +841,20 @@ namespace jnif {
                     }
                     line() << "  #" << param.nameIndex << ": " << name << "(access flags: " << param.accessFlags << ")" << endl;
                 }
+            }
+
+            void printBootstrapMethods(BootstrapMethodsAttr& attr) {
+                line() << "Bootstrap methods: " << endl;
+                for (auto &param : attr.bootstrapMethods) {
+                    line() << "  Methodref #" << param.bootstrap_method_ref << endl;
+                    for (auto &arg : param.bootstrap_arguments) {
+                        line() << "    Arg: #" << arg << endl;
+                    }
+                }
+            }
+
+            void printConstantValue(ConstantValueAttr& attr) {
+                line() << "Constant value: " << "#" << attr.constantValueIndex << endl;
             }
 
         private:

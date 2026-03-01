@@ -466,6 +466,25 @@ namespace jnif {
             }
         }
 
+        void writeBootstrapMethods(const BootstrapMethodsAttr& attr) {
+            u2 size = attr.bootstrapMethods.size();
+
+            bw.writeu2(size);
+            for (u1 i = 0; i < size; i++) {
+                auto &param = attr.bootstrapMethods[i];
+                bw.writeu2(param.bootstrap_method_ref);
+                bw.writeu2((u2)param.bootstrap_arguments.size());
+
+                for (auto &arg: param.bootstrap_arguments) {
+                    bw.writeu2(arg);
+                }
+            }
+        }
+
+        void writeConstantValue(const ConstantValueAttr& attr) {
+            bw.writeu2(attr.constantValueIndex);
+        }
+
         int pos(int offset) {
             return bw.getOffset() - offset;
         }
@@ -715,6 +734,12 @@ namespace jnif {
                         break;
                     case ATTR_METHODPARAMETERS:
                         writeMethodParameters((MethodParametersAttr&) attr);
+                        break;
+                    case ATTR_BOOTSTRAPMETHODS:
+                        writeBootstrapMethods((BootstrapMethodsAttr&) attr);
+                        break;
+                    case ATTR_CONSTANTVALUE:
+                        writeConstantValue((ConstantValueAttr&) attr);
                         break;
                     case ATTR_UNKNOWN:
                         writeUnknown((UnknownAttr&) attr);
