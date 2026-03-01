@@ -3061,7 +3061,15 @@ namespace jnif {
             /**
              * Renames this class
              */
-            void rename(const char *newClassName);
+            inline void renameClass(const char *newClassName)
+            {
+                this->renameClass(this->getThisClassName(), newClassName);
+            }
+
+            /**
+             * Renames every instance of a class being used
+             */
+            void renameClass(const char *oldClassName, const char *newClassName);
 
             /**
              * Dumps the classfile bytes to a file
