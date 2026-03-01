@@ -3064,9 +3064,6 @@ namespace jnif {
             inline void renameClass(const char *newClassName)
             {
                 auto className = this->getThisClassName();
-                if (!strlen(className))
-                    return;
-
                 this->renameClass(className, newClassName);
             }
 

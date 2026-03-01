@@ -328,6 +328,9 @@ namespace jnif {
         }
 
         void ClassFile::renameClass(const char *oldClassName, const char *newClassName) {
+            if (!strlen(oldClassName))
+                return;
+
             std::string sourceFileName = std::string(newClassName);
             size_t lastSlash = sourceFileName.find_last_of('/');
             sourceFileName = sourceFileName.substr(lastSlash + 1) + ".java";
