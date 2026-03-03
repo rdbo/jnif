@@ -11,7 +11,6 @@
     #include <execinfo.h>
     #define EXECINFO_PRESENT 1
 #endif
-#include <unistd.h>
 
 namespace jnif {
 

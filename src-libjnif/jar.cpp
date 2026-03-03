@@ -4,6 +4,7 @@
 
 #include "jnif.hpp"
 #include "zip/unzip.h"
+#include <algorithm>
 
 namespace jnif {
 
