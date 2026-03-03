@@ -15,7 +15,7 @@ if(NOT MSVC)
     add_compile_options(-Wall -Wextra)
 endif()
 
-find_package(JNI)
+find_package(JNI QUIET)
 find_package(Java QUIET)
 include(UseJava)
 
