@@ -4,6 +4,7 @@
 
 #include "jnif.hpp"
 #include <cstdio>
+#include <cstring>
 
 namespace jnif {
 
