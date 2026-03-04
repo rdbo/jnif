@@ -5,6 +5,8 @@
  *      Author: luigi
  */
 #include "jnif.hpp"
+#include <cstdint>
+#include <cstring>
 
 using namespace std;
 
@@ -71,8 +73,8 @@ namespace jnif {
             JnifError::check(offset + 2 <= len, "Invalid write: offset: ", offset + 2,
                              ", len: ", len, ", value: ", value);
 
-            buffer[offset + 0] = ((u1*) &value)[1];
-            buffer[offset + 1] = ((u1*) &value)[0];
+            buffer[offset + 0] = static_cast<u1>((value >> 8) & 0xff);
+            buffer[offset + 1] = static_cast<u1>(value & 0xff);
 
             offset += 2;
         }
@@ -81,10 +83,10 @@ namespace jnif {
             JnifError::check(offset + 4 <= len, "Invalid write: offset: ", offset + 4,
                              ", len: ", len);
 
-            buffer[offset + 0] = ((u1*) &value)[3];
-            buffer[offset + 1] = ((u1*) &value)[2];
-            buffer[offset + 2] = ((u1*) &value)[1];
-            buffer[offset + 3] = ((u1*) &value)[0];
+            buffer[offset + 0] = static_cast<u1>((value >> 24) & 0xff);
+            buffer[offset + 1] = static_cast<u1>((value >> 16) & 0xff);
+            buffer[offset + 2] = static_cast<u1>((value >> 8) & 0xff);
+            buffer[offset + 3] = static_cast<u1>(value & 0xff);
 
             offset += 4;
         }
@@ -190,22 +192,24 @@ namespace jnif {
                         break;
                     case ConstPool::FLOAT: {
                         float fvalue = entry->f.value;
-                        u4 value = *(u4*) &fvalue;
+                        u4 value;
+                        std::memcpy(&value, &fvalue, sizeof(value));
                         bw.writeu4(value);
                         break;
                     }
                     case ConstPool::LONG: {
-                        long value = cp.getLong(i);
-                        bw.writeu4(value >> 32);
-                        bw.writeu4(value & 0xffffffff);
+                        uint64_t value = static_cast<uint64_t>(cp.getLong(i));
+                        bw.writeu4(static_cast<u4>(value >> 32));
+                        bw.writeu4(static_cast<u4>(value & 0xffffffffULL));
                         //		i++;
                         break;
                     }
                     case ConstPool::DOUBLE: {
                         double dvalue = cp.getDouble(i);
-                        long value = *(long*) &dvalue;
-                        bw.writeu4(value >> 32);
-                        bw.writeu4(value & 0xffffffff);
+                        uint64_t value;
+                        std::memcpy(&value, &dvalue, sizeof(value));
+                        bw.writeu4(static_cast<u4>(value >> 32));
+                        bw.writeu4(static_cast<u4>(value & 0xffffffffULL));
                         //			i++;
                         break;
                     }

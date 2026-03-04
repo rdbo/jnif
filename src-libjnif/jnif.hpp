@@ -2,6 +2,7 @@
 #ifndef JNIF_HPP
 #define JNIF_HPP
 
+#include <cstdint>
 #include <sstream>
 #include <vector>
 #include <list>
@@ -298,7 +299,7 @@ namespace jnif {
             struct Long {
 
                 /// The long value of this entry.
-                const long value;
+                const int64_t value;
             };
 
             /// Represents a double constant value.
@@ -609,7 +610,7 @@ namespace jnif {
              * @param value the long value.
              * @returns the Index of the newly created entry.
              */
-            Index addLong(long value);
+            Index addLong(int64_t value);
 
             /**
              * Adds a double constant value.
@@ -727,7 +728,7 @@ namespace jnif {
                 return _getEntry(index, FLOAT, "CONSTANT_Float")->f.value;
             }
 
-            long getLong(Index index) const {
+            int64_t getLong(Index index) const {
                 return _getEntry(index, LONG, "CONSTANT_Long")->l.value;
             }
 

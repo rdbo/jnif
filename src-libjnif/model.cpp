@@ -79,7 +79,7 @@ namespace jnif {
             return _addSingle(Float({value}));
         }
 
-        ConstPool::Index ConstPool::addLong(long value) {
+        ConstPool::Index ConstPool::addLong(int64_t value) {
             return _addDoubleEntry(Long({value}));
         }
 

@@ -1,5 +1,7 @@
 
 #include "jnif.hpp"
+#include <cstdint>
+#include <cstring>
 
 namespace jnif {
 
@@ -56,7 +58,7 @@ namespace jnif {
                 u1 r0 = buffer[off + 0];
                 u1 r1 = buffer[off + 1];
 
-                u2 result = r0 << 8 | r1;
+                u2 result = (static_cast<u2>(r0) << 8) | static_cast<u2>(r1);
 
                 off += 2;
 
@@ -72,7 +74,10 @@ namespace jnif {
                 u1 r2 = buffer[off + 2];
                 u1 r3 = buffer[off + 3];
 
-                u4 result = r0 << 24 | r1 << 16 | r2 << 8 | r3;
+                u4 result = (static_cast<u4>(r0) << 24) |
+                            (static_cast<u4>(r1) << 16) |
+                            (static_cast<u4>(r2) << 8) |
+                            static_cast<u4>(r3);
 
                 off += 4;
 
@@ -150,14 +155,15 @@ namespace jnif {
                         }
                         case ConstPool::FLOAT: {
                             u4 value = br->readu4();
-                            float fvalue = *(float *) &value;
+                            float fvalue;
+                            std::memcpy(&fvalue, &value, sizeof(fvalue));
                             cp->addFloat(fvalue);
                             break;
                         }
                         case ConstPool::LONG: {
                             u4 high = br->readu4();
                             u4 low = br->readu4();
-                            long value = ((long) high << 32) + low;
+                            int64_t value = (static_cast<int64_t>(high) << 32) | static_cast<uint64_t>(low);
                             cp->addLong(value);
                             i++;
                             break;
@@ -165,8 +171,9 @@ namespace jnif {
                         case ConstPool::DOUBLE: {
                             u4 high = br->readu4();
                             u4 low = br->readu4();
-                            long lvalue = ((long) high << 32) + low;
-                            double dvalue = *(double *) &lvalue;
+                            uint64_t bits = (static_cast<uint64_t>(high) << 32) | static_cast<uint64_t>(low);
+                            double dvalue;
+                            std::memcpy(&dvalue, &bits, sizeof(dvalue));
                             cp->addDouble(dvalue);
                             i++;
                             break;
