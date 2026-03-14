@@ -684,7 +684,7 @@ namespace jnif {
                         return this->addWideVar(winst->subOpcode, winst->var.lvindex, pos);
                     }
                 } else {
-                    return this->addZero(inst->opcode);
+                    return this->addZero(inst->opcode,pos);
                 }
             }
             case KIND_LABEL: {
