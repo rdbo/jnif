@@ -221,7 +221,12 @@ namespace jnif {
                     u2 nameIndex, u4 len, const u1 *data, const string &,
                     ClassFile *cp, TArgs...
             ) {
-                return cp->_arena.create<UnknownAttr>(nameIndex, len, data, cp);
+                u1 *copiedData = nullptr;
+                if (len > 0) {
+                    copiedData = (u1 *)cp->_arena.alloc(len);
+                    std::memcpy(copiedData, data, len);
+                }
+                return cp->_arena.create<UnknownAttr>(nameIndex, len, copiedData, cp);
             }
         };
 
